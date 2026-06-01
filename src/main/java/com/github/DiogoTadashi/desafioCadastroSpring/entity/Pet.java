@@ -29,7 +29,7 @@ public class Pet {
     private TypePet typePet;
 
     @Enumerated(EnumType.STRING)
-    private SexPet sex;
+    private SexPet sexPet;
 
     @Embedded
     private Address address;
