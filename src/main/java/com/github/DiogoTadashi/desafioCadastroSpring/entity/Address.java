@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
+
+    private String houseNumber;
+    private String city;
+    private String street;
 }

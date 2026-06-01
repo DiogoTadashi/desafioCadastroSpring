@@ -23,21 +23,21 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String sobrenome;
+    private String lastName;
 
     @Enumerated(EnumType.STRING)
-    private TypePet tipo;
+    private TypePet typePet;
 
     @Enumerated(EnumType.STRING)
-    private SexPet sexo;
+    private SexPet sex;
 
     @Embedded
     private Address address;
 
-    private Double idade;
-    private Double peso;
-    private String raca;
+    private Integer age;
+    private Double weight;
+    private String breed;
 
     @CreationTimestamp
-    private LocalDateTime dataCadastro;
+    private LocalDateTime dateRegister;
 }
