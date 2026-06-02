@@ -5,9 +5,12 @@ import com.github.DiogoTadashi.desafioCadastroSpring.dto.PetRequest;
 import com.github.DiogoTadashi.desafioCadastroSpring.entity.Address;
 import com.github.DiogoTadashi.desafioCadastroSpring.entity.Pet;
 import com.github.DiogoTadashi.desafioCadastroSpring.enums.AgeUnit;
+import com.github.DiogoTadashi.desafioCadastroSpring.enums.SexPet;
+import com.github.DiogoTadashi.desafioCadastroSpring.enums.TypePet;
 import com.github.DiogoTadashi.desafioCadastroSpring.exception.PetNotFoundException;
 import com.github.DiogoTadashi.desafioCadastroSpring.exception.PetValidationException;
 import com.github.DiogoTadashi.desafioCadastroSpring.repository.PetRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,15 +48,32 @@ public class PetService {
     }
 
     public Pet update(Long id, PetRequest request) {
-        //Fazer
+        Pet pet = findById(id);
+
+        Address address = new Address(
+                defaultString(request.address().houseNumber()),
+                request.address().city(),
+                request.address().street()
+        );
+
+        pet.setName(request.name());
+        pet.setLastName(request.lastName());
+        pet.setAddress(address);
+        pet.setBreed(defaultString(request.breed()));
+        pet.setAge(convertAge(
+                request.age(),
+                request.ageUnit()
+        ));
+        pet.setWeight(request.weight());
+
+        validatePet(pet, request.ageUnit());
+
+        return repository.save(pet);
     }
 
     public void delete(Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-        } else {
-            throw new PetNotFoundException("Pet not found with ID: " + id);
-        }
+        findById(id);
+        repository.deleteById(id);
     }
 
     public List<Pet> findAll() {
@@ -66,9 +86,10 @@ public class PetService {
                         "Pet not found with id: " + id
         ));
     }
-
-    public List<Pet> findByCriteria(){
-        //Fazer
+    public List<Pet> findByCriteria(String name, String lastName, TypePet typePet, SexPet sexPet, Address address,
+                                    Double age, Double weight, String breed) {
+        Specification<Pet> spec = Specification.unrestricted();
+        
     }
 
     private static final String NAME_REGEX = "^[a-zA-ZÀ-ÿ ]+$";
@@ -80,12 +101,9 @@ public class PetService {
         if (!pet.getLastName().matches(NAME_REGEX)) {
             throw new PetValidationException("Last name characters only accepted");
         }
-        if (pet.getWeight() != null &&
-                (pet.getWeight() < 0.5 || pet.getWeight() > 60)) {
-            throw new PetValidationException("Weight must be between 0.5kg and 60kg");
-        }
         if (pet.getAge() != null &&
-                (pet.getAge() > 20 && ageUnit == AgeUnit.YEARS)) {
+                ((pet.getAge() > 20 && ageUnit == AgeUnit.YEARS)
+                        || (pet.getAge() > 240 && ageUnit == AgeUnit.MONTHS))) {
             throw new PetValidationException("Age must be below 20 years");
         }
     }
