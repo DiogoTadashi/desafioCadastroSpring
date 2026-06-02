@@ -6,6 +6,9 @@ import com.github.DiogoTadashi.desafioCadastroSpring.enums.TypePet;
 import org.springframework.data.jpa.domain.Specification;
 
 public final class PetSpecification {
+    private PetSpecification() {
+    }
+
     public static Specification<Pet> nameContains(String name) {
         return (root, query, cb) -> cb.like
                 (cb.lower(root.get("name")),
@@ -51,7 +54,7 @@ public final class PetSpecification {
                 );
     }
 
-    public static Specification<Pet> ageEquals(Integer age) {
+    public static Specification<Pet> ageEquals(Double age) {
         return (root, query, cb) -> cb.equal(root.get("age"), age);
     }
 

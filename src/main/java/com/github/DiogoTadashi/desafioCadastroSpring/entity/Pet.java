@@ -34,7 +34,7 @@ public class Pet {
     @Embedded
     private Address address;
 
-    private Integer age;
+    private Double age;
     private Double weight;
     private String breed;
 
