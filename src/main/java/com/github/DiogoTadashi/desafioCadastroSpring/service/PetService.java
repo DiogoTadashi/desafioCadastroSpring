@@ -10,6 +10,7 @@ import com.github.DiogoTadashi.desafioCadastroSpring.enums.TypePet;
 import com.github.DiogoTadashi.desafioCadastroSpring.exception.PetNotFoundException;
 import com.github.DiogoTadashi.desafioCadastroSpring.exception.PetValidationException;
 import com.github.DiogoTadashi.desafioCadastroSpring.repository.PetRepository;
+import com.github.DiogoTadashi.desafioCadastroSpring.specification.PetSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -86,10 +87,23 @@ public class PetService {
                         "Pet not found with id: " + id
         ));
     }
-    public List<Pet> findByCriteria(String name, String lastName, TypePet typePet, SexPet sexPet, Address address,
-                                    Double age, Double weight, String breed) {
+    public List<Pet> findByCriteria(String name, String lastName, TypePet typePet, SexPet sexPet,
+                                    String city, String street, String houseNumber, Double age,
+                                    Double weight, String breed) {
         Specification<Pet> spec = Specification.unrestricted();
-        
+
+        if (name != null) spec = spec.and(PetSpecification.nameContains(name));
+        if (lastName != null) spec = spec.and(PetSpecification.lastNameContains(lastName));
+        if (typePet != null) spec = spec.and(PetSpecification.typeEquals(typePet));
+        if (sexPet != null) spec = spec.and(PetSpecification.sexEquals(sexPet));
+        if (city != null) spec = spec.and(PetSpecification.cityContains(city));
+        if (street != null) spec = spec.and(PetSpecification.streetContains(street));
+        if (houseNumber != null) spec = spec.and(PetSpecification.houseNumberEquals(houseNumber));
+        if (age != null) spec = spec.and(PetSpecification.ageEquals(age));
+        if (weight != null) spec = spec.and(PetSpecification.weightEquals(weight));
+        if (breed != null) spec = spec.and(PetSpecification.breedContains(breed));
+
+        return repository.findAll(spec);
     }
 
     private static final String NAME_REGEX = "^[a-zA-ZÀ-ÿ ]+$";
