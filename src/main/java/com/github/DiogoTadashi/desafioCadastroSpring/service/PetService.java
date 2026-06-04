@@ -2,6 +2,7 @@ package com.github.DiogoTadashi.desafioCadastroSpring.service;
 
 import com.github.DiogoTadashi.desafioCadastroSpring.constants.PetConstants;
 import com.github.DiogoTadashi.desafioCadastroSpring.dto.PetRequest;
+import com.github.DiogoTadashi.desafioCadastroSpring.dto.PetResponse;
 import com.github.DiogoTadashi.desafioCadastroSpring.entity.Address;
 import com.github.DiogoTadashi.desafioCadastroSpring.entity.Pet;
 import com.github.DiogoTadashi.desafioCadastroSpring.enums.AgeUnit;
@@ -24,7 +25,7 @@ public class PetService {
         this.repository = repository;
     }
 
-    public Pet save(PetRequest request) {
+    public PetResponse save(PetRequest request) {
 
         Address address = new Address(
                 defaultString(request.address().houseNumber()),
@@ -45,11 +46,12 @@ public class PetService {
 
         validatePet(pet, request.ageUnit());
 
-        return repository.save(pet);
+        Pet saved = repository.save(pet);
+        return PetResponse.from(saved);
     }
 
-    public Pet update(Long id, PetRequest request) {
-        Pet pet = findById(id);
+    public PetResponse update(Long id, PetRequest request) {
+        Pet pet = findPetById(id);
 
         Address address = new Address(
                 defaultString(request.address().houseNumber()),
@@ -69,11 +71,12 @@ public class PetService {
 
         validatePet(pet, request.ageUnit());
 
-        return repository.save(pet);
+        Pet saved = repository.save(pet);
+        return PetResponse.from(saved);
     }
 
     public void delete(Long id) {
-        findById(id);
+        findPetById(id);
         repository.deleteById(id);
     }
 
@@ -81,12 +84,15 @@ public class PetService {
         return repository.findAll();
     }
 
-    public Pet findById(Long id) {
+    private Pet findPetById(Long id) {
         return repository.findById(id).orElseThrow(() ->
-                new PetNotFoundException(
-                        "Pet not found with id: " + id
-        ));
+                new PetNotFoundException("Pet not found with id: " + id));
     }
+
+    public PetResponse findById(Long id) {
+        return PetResponse.from(findPetById(id));
+    }
+
     public List<Pet> findByCriteria(String name, String lastName, TypePet typePet, SexPet sexPet,
                                     String city, String street, String houseNumber, Double age,
                                     Double weight, String breed) {
