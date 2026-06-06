@@ -1,6 +1,9 @@
 package com.github.DiogoTadashi.desafioCadastroSpring.controller;
 
-import com.github.DiogoTadashi.desafioCadastroSpring.entity.Pet;
+import com.github.DiogoTadashi.desafioCadastroSpring.dto.PetRequest;
+import com.github.DiogoTadashi.desafioCadastroSpring.dto.PetResponse;
+import com.github.DiogoTadashi.desafioCadastroSpring.enums.SexPet;
+import com.github.DiogoTadashi.desafioCadastroSpring.enums.TypePet;
 import com.github.DiogoTadashi.desafioCadastroSpring.service.PetService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,22 +22,50 @@ public class PetController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Pet> save(@RequestBody @Valid Pet pet) {
-        return ResponseEntity.status(HttpStatus.CREATED);
+    public ResponseEntity<PetResponse> save(@RequestBody @Valid PetRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(petService.save(request));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Pet>> findAll() {
+    public ResponseEntity<List<PetResponse>> findAll() {
+        List<PetResponse> petList = petService.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(petList);
+    }
 
+    @GetMapping("")
+    public ResponseEntity<List<PetResponse>> findByCriteria(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) TypePet typePet,
+            @RequestParam(required = false) SexPet sexPet,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String street,
+            @RequestParam(required = false) String houseNumber,
+            @RequestParam(required = false) Double age,
+            @RequestParam(required = false) Double weight,
+            @RequestParam(required = false) String breed) {
+        List<PetResponse> petList = petService.findByCriteria(
+                name, lastName, typePet, sexPet,
+                city, street, houseNumber, age, weight, breed);
+
+        return ResponseEntity.status(HttpStatus.OK).body(petList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Pet>> findById(@PathVariable Long id) {
-
+    public ResponseEntity<PetResponse> findById(@PathVariable Long id) {
+        PetResponse pet = petService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(pet);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pet> update(@PathVariable Long id, @RequestBody @Valid Pet pet) {
+    public ResponseEntity<PetResponse> update(@PathVariable Long id, @RequestBody @Valid PetRequest request) {
+        PetResponse pet = petService.update(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(pet);
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        petService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

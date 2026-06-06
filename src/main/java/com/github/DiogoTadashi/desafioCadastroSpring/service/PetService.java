@@ -80,8 +80,11 @@ public class PetService {
         repository.deleteById(id);
     }
 
-    public List<Pet> findAll() {
-        return repository.findAll();
+    public List<PetResponse> findAll() {
+        return repository.findAll()
+                .stream()
+                .map(PetResponse::from)
+                .toList();
     }
 
     private Pet findPetById(Long id) {
@@ -93,7 +96,7 @@ public class PetService {
         return PetResponse.from(findPetById(id));
     }
 
-    public List<Pet> findByCriteria(String name, String lastName, TypePet typePet, SexPet sexPet,
+    public List<PetResponse> findByCriteria(String name, String lastName, TypePet typePet, SexPet sexPet,
                                     String city, String street, String houseNumber, Double age,
                                     Double weight, String breed) {
         Specification<Pet> spec = Specification.unrestricted();
@@ -109,7 +112,10 @@ public class PetService {
         if (weight != null) spec = spec.and(PetSpecification.weightEquals(weight));
         if (breed != null) spec = spec.and(PetSpecification.breedContains(breed));
 
-        return repository.findAll(spec);
+        return repository.findAll(spec)
+                .stream()
+                .map(PetResponse::from)
+                .toList();
     }
 
     private static final String NAME_REGEX = "^[a-zA-ZÀ-ÿ ]+$";
