@@ -32,7 +32,7 @@ public class PetController {
         return ResponseEntity.status(HttpStatus.OK).body(petList);
     }
 
-    @GetMapping("")
+    @GetMapping("/search")
     public ResponseEntity<List<PetResponse>> findByCriteria(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String lastName,
@@ -54,13 +54,13 @@ public class PetController {
     @GetMapping("/{id}")
     public ResponseEntity<PetResponse> findById(@PathVariable Long id) {
         PetResponse pet = petService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(pet);
+        return ResponseEntity.ok(pet);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> update(@PathVariable Long id, @RequestBody @Valid PetRequest request) {
         PetResponse pet = petService.update(id, request);
-        return ResponseEntity.status(HttpStatus.OK).body(pet);
+        return ResponseEntity.ok(pet);
     }
 
     @DeleteMapping("/{id}")
