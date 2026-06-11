@@ -124,7 +124,7 @@ class PetServiceTest {
     void saveWeightTooLow() {
         PetRequest request = new PetRequest(
                 "Nina",
-                "123",
+                "Amorim",
                 TypePet.DOG,
                 SexPet.FEMALE,
                 new AddressRequest("123", "Jales", "Rua 14"),
@@ -142,7 +142,7 @@ class PetServiceTest {
     void saveWeightTooHigh() {
         PetRequest request = new PetRequest(
                 "Nina",
-                "123",
+                "Amorim",
                 TypePet.DOG,
                 SexPet.FEMALE,
                 new AddressRequest("123", "Jales", "Rua 14"),
@@ -160,7 +160,7 @@ class PetServiceTest {
     void saveAgeTooHighYears() {
         PetRequest request = new PetRequest(
                 "Nina",
-                "123",
+                "Amorim",
                 TypePet.DOG,
                 SexPet.FEMALE,
                 new AddressRequest("123", "Jales", "Rua 14"),
@@ -178,7 +178,7 @@ class PetServiceTest {
     void saveAgeTooHighMonths() {
         PetRequest request = new PetRequest(
                 "Nina",
-                "123",
+                "Amorim",
                 TypePet.DOG,
                 SexPet.FEMALE,
                 new AddressRequest("123", "Jales", "Rua 14"),
@@ -195,16 +195,19 @@ class PetServiceTest {
     @Test
     @DisplayName("Should update pet successfully")
     void updatePetSuccess() {
+
     }
 
     @Test
     @DisplayName("Should throw PetNotFoundException when updating non existing pet")
     void updatePetNotFound() {
+
     }
 
     @Test
     @DisplayName("Should throw PetValidationException when name is invalid on update")
     void updateInvalidName() {
+
     }
 
     // ─── DELETE ──────────────────────────────────────────────
@@ -230,6 +233,12 @@ class PetServiceTest {
     @Test
     @DisplayName("Should return list of pets")
     void findAllReturnsList() {
+        when(repository.findAll()).thenReturn(List.of(pet));
+
+        List<PetResponse> response = service.findAll();
+
+        assertThat(response).hasSize(1);
+        assertThat(response.get(0).name()).isEqualTo("Nina");
     }
 
     @Test
@@ -257,6 +266,9 @@ class PetServiceTest {
     @Test
     @DisplayName("Should throw PetNotFoundException when pet not found")
     void findByIdNotFound() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(PetNotFoundException.class, () -> service.findById(1L));
     }
 
     // ─── FIND BY CRITERIA ────────────────────────────────────
