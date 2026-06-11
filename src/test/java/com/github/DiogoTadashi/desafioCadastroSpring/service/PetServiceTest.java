@@ -104,26 +104,91 @@ class PetServiceTest {
     @Test
     @DisplayName("Should throw PetValidationException when last name has numbers")
     void saveInvalidLastName() {
+        PetRequest request = new PetRequest(
+                "Nina",
+                "123",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                10.0,
+                AgeUnit.YEARS,
+                15.5,
+                "Shitzu"
+        );
+
+        assertThrows(PetValidationException.class, () -> service.save(request));
     }
 
     @Test
     @DisplayName("Should throw PetValidationException when weight is below 0.5")
     void saveWeightTooLow() {
+        PetRequest request = new PetRequest(
+                "Nina",
+                "123",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                21.0,
+                AgeUnit.YEARS,
+                0.4,
+                "Shitzu"
+        );
+
+        assertThrows(PetValidationException.class, () -> service.save(request));
     }
 
     @Test
     @DisplayName("Should throw PetValidationException when weight is above 60")
     void saveWeightTooHigh() {
+        PetRequest request = new PetRequest(
+                "Nina",
+                "123",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                21.0,
+                AgeUnit.YEARS,
+                60.1,
+                "Shitzu"
+        );
+
+        assertThrows(PetValidationException.class, () -> service.save(request));
     }
 
     @Test
     @DisplayName("Should throw PetValidationException when age is above 20 years")
     void saveAgeTooHighYears() {
+        PetRequest request = new PetRequest(
+                "Nina",
+                "123",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                21.0,
+                AgeUnit.YEARS,
+                15.5,
+                "Shitzu"
+        );
+
+        assertThrows(PetValidationException.class, () -> service.save(request));
     }
 
     @Test
     @DisplayName("Should throw PetValidationException when age is above 240 months")
     void saveAgeTooHighMonths() {
+        PetRequest request = new PetRequest(
+                "Nina",
+                "123",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                241.0,
+                AgeUnit.MONTHS,
+                15.5,
+                "Shitzu"
+        );
+
+        assertThrows(PetValidationException.class, () -> service.save(request));
     }
 
     // ─── UPDATE ──────────────────────────────────────────────
@@ -146,13 +211,10 @@ class PetServiceTest {
     @Test
     @DisplayName("Should delete pet successfully")
     void deletePetSuccess() {
-        // ARRANGE
         when(repository.findById(1L)).thenReturn(Optional.of(pet));
 
-        // ACT
         service.delete(1L);
 
-        // ASSERT
         verify(repository).deleteById(1L);
     }
 
