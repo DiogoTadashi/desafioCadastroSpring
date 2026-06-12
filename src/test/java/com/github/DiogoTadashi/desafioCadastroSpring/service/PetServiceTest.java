@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -195,7 +196,7 @@ class PetServiceTest {
     @Test
     @DisplayName("Should update pet successfully")
     void updatePetSuccess() {
-
+        when(repository.findById(1L)).thenReturn(Optional.of(pet));
     }
 
     @Test
@@ -275,10 +276,25 @@ class PetServiceTest {
     @Test
     @DisplayName("Should return pets filtered by name")
     void findByCriteriaByName() {
+        when(repository.findAll(any(Specification.class))).thenReturn(List.of(pet));
+
+        List<PetResponse> response = service.findByCriteria(
+                "Nina", null, null, null,
+                null, null, null, null,
+                null, null);
+
+        assertThat(response).hasSize(1);
+        assertThat(response.get(0).name()).isEqualTo("Nina");
     }
 
     @Test
     @DisplayName("Should return empty list when no pets match criteria")
     void findByCriteriaEmpty() {
+        when(repository.findAll(any(Specification.class))).thenReturn(List.of());
+        List<PetResponse> response = service.findByCriteria(
+                "Pedro", null, null, null,
+                null, null, null, null,
+                null, null);
+        assertThat(response).isEmpty();
     }
 }
