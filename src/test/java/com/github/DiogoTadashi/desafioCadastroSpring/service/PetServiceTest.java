@@ -196,19 +196,65 @@ class PetServiceTest {
     @Test
     @DisplayName("Should update pet successfully")
     void updatePetSuccess() {
+        PetRequest request = new PetRequest(
+                "Nina Updated",
+                "Amorim",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                10.0,
+                AgeUnit.YEARS,
+                15.5,
+                "Shitzu"
+        );
+
         when(repository.findById(1L)).thenReturn(Optional.of(pet));
+        when(repository.save(any(Pet.class))).thenReturn(pet);
+
+        PetResponse response = service.update(1L, request);
+
+        assertThat(response.id()).isEqualTo(1L);
+        verify(repository).save(any(Pet.class));
     }
 
     @Test
     @DisplayName("Should throw PetNotFoundException when updating non existing pet")
     void updatePetNotFound() {
+        PetRequest request = new PetRequest(
+                "Nina",
+                "Amorim",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                10.0,
+                AgeUnit.YEARS,
+                15.5,
+                "Shitzu"
+        );
 
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(PetNotFoundException.class, () -> service.update(1L, request));
     }
 
     @Test
     @DisplayName("Should throw PetValidationException when name is invalid on update")
     void updateInvalidName() {
+        PetRequest request = new PetRequest(
+                "123",
+                "Amorim",
+                TypePet.DOG,
+                SexPet.FEMALE,
+                new AddressRequest("123", "Jales", "Rua 14"),
+                10.0,
+                AgeUnit.YEARS,
+                15.5,
+                "Shitzu"
+        );
 
+        when(repository.findById(1L)).thenReturn(Optional.of(pet));
+
+        assertThrows(PetValidationException.class, () -> service.update(1L, request));
     }
 
     // ─── DELETE ──────────────────────────────────────────────
