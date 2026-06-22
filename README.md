@@ -2,8 +2,6 @@
 A REST API for pet registration and management built with Spring Boot.
 
 ## 🌐 Live Demo
-API available at: https://desafiocadastrospring-production.up.railway.app
-
 Example:
 GET https://desafiocadastrospring-production.up.railway.app/pets
 
