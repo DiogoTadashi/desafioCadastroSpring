@@ -26,7 +26,6 @@ public record PetRequest(
         @PositiveOrZero
         Double age,
 
-        @NotNull
         AgeUnit ageUnit,
 
         @DecimalMin("0.5")
